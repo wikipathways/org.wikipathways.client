@@ -5,6 +5,7 @@
 	<property name="axis.wpclient.dir" value="gen-src"/>
 	<property name="bundle.dest" value="dist"/>
 	<property name="jar.name" value="${bundle.dest}/${ant.project.name}.jar"/>
+	<property name="version" value="3.1.2"/>
 	
 	<path id="project.class.path">
 		<fileset dir="lib" includes="*.jar" />
@@ -21,6 +22,8 @@
 	<target name="prepare">
 		<mkdir dir="${bundle.dest}"/>
 		<mkdir dir="build"/>
+		<mkdir dir="build/bot"/>
+		<mkdir dir="tmp"/>
 	</target>
 
 	<target name="compile" depends="wpclient-axis, prepare">
@@ -62,13 +65,12 @@
 		</jar>
 	</target>
 	
-	<target name="test">
+	<target name="test" depends="jar">
 		<javac srcdir="test" debug="${debug.mode}"
 					includes="**"
 					destdir="build"
 					source="1.6">
 			<classpath>
-				<path refid="test.class.path"/>
 				<path refid="project.class.path"/>
 			</classpath>
 		</javac>
@@ -76,9 +78,7 @@
 			<formatter type="brief" usefile="false"/>
 			<classpath>
 				<pathelement path="build"/>
-				<pathelement path="resources"/>
 				<path refid="project.class.path"/>
-				<path refid="test.class.path"/>
 			</classpath>
 			<batchtest>
 				<fileset dir="test">
@@ -95,30 +95,29 @@
 	<target name="dist-clean" depends="clean">
 		<delete dir="${bundle.dest}"/>
 		<delete dir="${axis.wpclient.dir}"/>
+		<delete dir="tmp"/>
+		<delete dir="build/bot"/>
 	</target>
 	
-	<target name="wp-bots">
-		<mkdir dir="build/bot"/>
-		<unjar src="../org.pathvisio.core.jar" dest="build/bot"/>
-		<unjar src="../org.wikipathways.client.jar" dest="build/bot"/>
+	<target name="wp-bots" depends="jar">
+		<unjar src="bundles/org.pathvisio.core.jar" dest="build/bot"/>
+		<unjar src="${bundle.dest}/org.wikipathways.client.jar" dest="build/bot"/>
 		
-		<unjar src="../../lib/com.springsource.org.jdom-1.1.0.jar" dest="build/bot"/>
-		<unjar src="../../lib/derby.jar" dest="build/bot"/>
-		<unjar src="../../lib/org.bridgedb.jar" dest="build/bot"/>
-		<unjar src="../../lib/org.bridgedb.rdb.jar" dest="build/bot"/>
-		<unjar src="../../lib/org.bridgedb.bio.jar" dest="build/bot"/>
+		<unjar src="bundles/com.springsource.org.jdom-1.1.0.jar" dest="build/bot"/>
+		<unjar src="bundles/derby.jar" dest="build/bot"/>
+		<unjar src="bundles/org.bridgedb.jar" dest="build/bot"/>
+		<unjar src="bundles/org.bridgedb.rdb.jar" dest="build/bot"/>
+		<unjar src="bundles/org.bridgedb.bio.jar" dest="build/bot"/>
 
-		<unjar src="${lib.axis.dir}/axis.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/axis-ant.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/commons-discovery-0.2.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/commons-logging-1.0.4.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/jaxrpc.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/log4j-1.2.8.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/saaj.jar" dest="build/bot"/>
-		<unjar src="${lib.axis.dir}/wsdl4j-1.5.1.jar" dest="build/bot"/>
+		<unjar src="lib/axis.jar" dest="build/bot"/>
+		<unjar src="lib/axis-ant.jar" dest="build/bot"/>
+		<unjar src="lib/commons-discovery-0.2.jar" dest="build/bot"/>
+		<unjar src="lib/commons-logging-1.0.4.jar" dest="build/bot"/>
+		<unjar src="lib/jaxrpc.jar" dest="build/bot"/>
+		<unjar src="lib/saaj.jar" dest="build/bot"/>
+		<unjar src="lib/wsdl4j-1.5.1.jar" dest="build/bot"/>
 		
-		<jar file="org.wikipathways.bots-${pathvisio.version}.jar" basedir="build/bot"/>
-		<delete dir="build/bots"/>
+		<jar file="org.wikipathways.bots-${version}.jar" basedir="build/bot"/>
 	</target>
 
 </project>
