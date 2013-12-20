@@ -58,11 +58,7 @@
 		<unjar src="lib/saaj.jar" dest="build"/>
 		<unjar src="lib/wsdl4j-1.5.1.jar" dest="build"/>
 		
-		<jar jarfile="${jar.name}" manifest="META-INF/MANIFEST.MF">
-			<fileset dir="build">
-				<include name="**/*.class"/>
-			</fileset>
-		</jar>
+		<jar jarfile="${jar.name}" manifest="META-INF/MANIFEST.MF" basedir="build"/>
 	</target>
 	
 	<target name="test" depends="jar">
